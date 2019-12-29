@@ -10,6 +10,7 @@ func Setup() *gin.Engine {
 	api := r.Group("/api")
 	{
 		api.GET("demo", controllers.Demo)
+		api.POST("login", controllers.Login)
 	}
 	return r
 }
