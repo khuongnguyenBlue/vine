@@ -6,7 +6,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/joho/godotenv"
 	"github.com/khuongnguyenBlue/vine/configs"
-	"github.com/khuongnguyenBlue/vine/models"
+	"github.com/khuongnguyenBlue/vine/migrations"
 	"github.com/khuongnguyenBlue/vine/routes"
 	"log"
 )
@@ -24,11 +24,12 @@ func main() {
 
 	if dbErr != nil {
 		fmt.Println("Cannot connect to DB: ", configs.BuildDBConfig())
+		panic(dbErr)
 	}
 
 	defer configs.DB.Close()
 
-	configs.DB.AutoMigrate(&models.User{})
+	migrations.Migrate()
 
 	r := routes.Setup()
 	r.Run()
