@@ -1,3 +1,5 @@
+## Truy cập API
+http://34.80.70.61/api/demo
 ## API Doc
 https://app.swaggerhub.com/apis-docs/khuongnguyenBlue/vine/1.0.0
 ## Thiết kế hệ thống
