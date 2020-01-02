@@ -6,5 +6,11 @@ import (
 )
 
 func Migrate() {
-	configs.DB.AutoMigrate(models.User{}, models.Subject{})
+	configs.DB.AutoMigrate(
+		models.User{},
+		models.Subject{},
+		models.Question{},
+		models.Exam{},
+		models.QuestionAnswer{},
+	)
 }
