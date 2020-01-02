@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/joho/godotenv"
 	"github.com/khuongnguyenBlue/vine/configs"
 	"github.com/khuongnguyenBlue/vine/migrations"
 	"github.com/khuongnguyenBlue/vine/routes"
+	"github.com/khuongnguyenBlue/vine/seeds"
 	"log"
 )
 
@@ -23,13 +23,21 @@ func main() {
 	configs.DB, dbErr = gorm.Open("postgres", configs.DBUrl(configs.BuildDBConfig()))
 
 	if dbErr != nil {
-		fmt.Println("Cannot connect to DB: ", configs.BuildDBConfig())
 		panic(dbErr)
 	}
 
 	defer configs.DB.Close()
 
 	migrations.Migrate()
+
+	c := make(chan error)
+	go seeds.All(c)
+	log.Println("wait")
+	if seedErr := <-c; seedErr != nil {
+		log.Println("Failed to seeding")
+	} else {
+		log.Println("Finished seeding")
+	}
 
 	r := routes.Setup()
 	r.Run()

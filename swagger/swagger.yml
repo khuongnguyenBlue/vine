@@ -7,6 +7,8 @@ basePath: /api
 tags:
   - name: auth
     description: Login, logout
+  - name: subject
+    description: Môn học
 schemes:
   - http
 paths:
@@ -34,6 +36,25 @@ paths:
           description: Thông tin đăng nhập không hợp lệ
         "401":
           description: Mật khẩu không chính xác
+  /subjects:
+    get:
+      tags:
+        - subject
+      summary: Danh sách môn học
+      description: ""
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Subject"
+        "503":
+          description: Lỗi kết nối database
 
 definitions:
   Auth:
@@ -44,3 +65,10 @@ definitions:
       password:
         type: string
         example: abcxyz
+  Subject:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        example: Toán
