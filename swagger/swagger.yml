@@ -9,6 +9,8 @@ tags:
     description: Login, logout
   - name: subject
     description: Môn học
+  - name: exam
+    description: Bài kiểm tra
 schemes:
   - http
 paths:
@@ -50,9 +52,24 @@ paths:
         "200":
           description: success
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Subject"
+            $ref: "#/definitions/SubjectsList"
+        "503":
+          description: Lỗi kết nối database
+  /subjects/:id/exams:
+    get:
+      tags:
+        - exam
+      summary: Danh sách bài thi trong môn học
+      description: ""
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: "#/definitions/ExamsList"
         "503":
           description: Lỗi kết nối database
 
@@ -72,3 +89,34 @@ definitions:
       name:
         type: string
         example: Toán
+  SubjectsList:
+    properties:
+      subjects:
+        type: array
+        items:
+          $ref: "#/definitions/Subject"
+  Exam:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        example: Kiểm tra giữa kỳ
+      time_allow:
+        type: integer
+        example: 30
+      status:
+        type: integer
+        example: 1
+      questions_count:
+        type: integer
+        example: 20
+      subject_id:
+        type: integer
+        example: 1
+  ExamsList:
+    properties:
+      exams:
+        type: array
+        items:
+          $ref: "#/definitions/Exam"

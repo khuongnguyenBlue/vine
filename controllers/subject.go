@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func GetSubjects(c *gin.Context)  {
+func GetSubjects(c *gin.Context) {
 	var subjects []models.Subject
 	err := models.GetSubjects(configs.DB, &subjects)
 	if err != nil {
