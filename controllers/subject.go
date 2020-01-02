@@ -10,7 +10,7 @@ func GetSubjects(c *gin.Context)  {
 	var subjects []models.Subject
 	err := models.GetSubjects(&subjects)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatus(http.StatusServiceUnavailable)
 	} else {
 		c.JSON(http.StatusOK, subjects)
 	}
