@@ -11,6 +11,7 @@ func Setup() *gin.Engine {
 	{
 		api.GET("demo", controllers.Demo)
 		api.POST("login", controllers.Login)
+		api.GET("subjects", controllers.GetSubjects)
 	}
 	return r
 }
