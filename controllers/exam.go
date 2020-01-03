@@ -26,17 +26,8 @@ func GetExams(c *gin.Context)  {
 	if err = subject.GetExams(configs.DB, &exams); err != nil {
 		c.AbortWithStatus(http.StatusServiceUnavailable)
 	} else {
-		var examsResponse serializers.ExamsList
-		for _, exam := range exams {
-			examsResponse.Exams = append(examsResponse.Exams, serializers.Exam{
-				ID:             exam.ID,
-				Name:           exam.Name,
-				TimeAllow:      exam.TimeAllow,
-				Status:         exam.Status,
-				QuestionsCount: len(exam.Questions),
-				SubjectID:      uint(id),
-			})
-		}
-		c.JSON(http.StatusOK, examsResponse)
+		var examsJson serializers.ExamsJson
+		examsJson.Parse(exams)
+		c.JSON(http.StatusOK, examsJson)
 	}
 }

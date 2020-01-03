@@ -14,13 +14,8 @@ func GetSubjects(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatus(http.StatusServiceUnavailable)
 	} else {
-		var subjectsResponse serializers.SubjectsList
-		for _, subject := range subjects {
-			subjectsResponse.Subjects = append(subjectsResponse.Subjects, serializers.Subject{
-				ID:   subject.ID,
-				Name: subject.Name,
-			})
-		}
-		c.JSON(http.StatusOK, subjectsResponse)
+		var subjectsJson serializers.SubjectsJson
+		subjectsJson.Parse(subjects)
+		c.JSON(http.StatusOK, subjectsJson)
 	}
 }
