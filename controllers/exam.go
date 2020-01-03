@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func GetExams(c *gin.Context)  {
+func GetExams(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -25,9 +25,10 @@ func GetExams(c *gin.Context)  {
 	var exams []models.Exam
 	if err = subject.GetExams(configs.DB, &exams); err != nil {
 		c.AbortWithStatus(http.StatusServiceUnavailable)
-	} else {
-		var examsJson serializers.ExamsJson
-		examsJson.Parse(exams)
-		c.JSON(http.StatusOK, examsJson)
+		return
 	}
+
+	var examsJson serializers.ExamsJson
+	examsJson.Parse(exams)
+	c.JSON(http.StatusOK, examsJson)
 }
