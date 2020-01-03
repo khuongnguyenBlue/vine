@@ -21,6 +21,7 @@ func init()  {
 func main() {
 	var dbErr error;
 	configs.DB, dbErr = gorm.Open("postgres", configs.DBUrl(configs.BuildDBConfig()))
+	configs.DB.LogMode(true)
 
 	if dbErr != nil {
 		panic(dbErr)

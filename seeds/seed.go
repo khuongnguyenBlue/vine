@@ -152,13 +152,13 @@ func seedQuestionAnswers() error {
 	for _, question := range questions {
 		randNum := randomdata.Number(0, 4)
 		for i := 0; i < 4; i++ {
-			question_answer := models.QuestionAnswer{
+			questionAnswer := models.QuestionAnswer{
 				Content:   randomdata.Country(0),
 				IsCorrect: i == randNum,
 				Question:  question,
 			}
 
-			if err := tx.Create(&question_answer).Error; err != nil {
+			if err := tx.Create(&questionAnswer).Error; err != nil {
 				tx.Rollback()
 				return err
 			}

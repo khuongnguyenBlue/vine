@@ -3,9 +3,9 @@ package models
 import "github.com/jinzhu/gorm"
 
 type Question struct {
-	ID        uint   `json:"id"`
-	Content   string `json:"content" gorm:"type:varchar(500); not null"`
-	SubjectID uint   `json:"subject_id" gorm:"not null"`
+	ID        uint
+	Content   string `gorm:"type:varchar(500); not null"`
+	SubjectID uint   `gorm:"not null"`
 	Subject   Subject
 }
 
