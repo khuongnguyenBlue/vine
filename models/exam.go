@@ -1,5 +1,7 @@
 package models
 
+import "github.com/jinzhu/gorm"
+
 type ExamStatus int
 
 const (
@@ -16,4 +18,12 @@ type Exam struct {
 	Questions []Question `gorm:"many2many:exam_questions"`
 	SubjectID uint       `gorm:"not null"`
 	Subject   Subject
+}
+
+func GetExam(db *gorm.DB, exam *Exam) error {
+	if err := db.First(exam).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

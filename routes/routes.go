@@ -13,6 +13,7 @@ func Setup() *gin.Engine {
 		api.POST("login", controllers.Login)
 		api.GET("subjects", controllers.GetSubjects)
 		api.GET("subjects/:id/exams", controllers.GetExams)
+		api.GET("exams/:id", controllers.GetExam)
 	}
 	return r
 }
