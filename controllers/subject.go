@@ -13,9 +13,10 @@ func GetSubjects(c *gin.Context) {
 	err := models.GetSubjects(configs.DB, &subjects)
 	if err != nil {
 		c.AbortWithStatus(http.StatusServiceUnavailable)
-	} else {
-		var subjectsJson serializers.SubjectsJson
-		subjectsJson.Parse(subjects)
-		c.JSON(http.StatusOK, subjectsJson)
+		return
 	}
+
+	var subjectsJson serializers.SubjectsJson
+	subjectsJson.Parse(subjects)
+	c.JSON(http.StatusOK, subjectsJson)
 }

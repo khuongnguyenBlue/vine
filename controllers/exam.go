@@ -5,18 +5,18 @@ import (
 	"github.com/khuongnguyenBlue/vine/configs"
 	"github.com/khuongnguyenBlue/vine/models"
 	"github.com/khuongnguyenBlue/vine/serializers"
+	"github.com/khuongnguyenBlue/vine/utils"
 	"net/http"
-	"strconv"
 )
 
 func GetExams(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 0)
+	id, err := utils.GetIDParams(c)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	subject := models.Subject{ID: uint(id)}
+	subject := models.Subject{ID: id}
 	if err = models.GetSubject(configs.DB, &subject); err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
@@ -31,4 +31,22 @@ func GetExams(c *gin.Context) {
 	var examsJson serializers.ExamsJson
 	examsJson.Parse(exams)
 	c.JSON(http.StatusOK, examsJson)
+}
+
+func GetExam(c *gin.Context) {
+	id, err := utils.GetIDParams(c)
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	exam := models.Exam{ID: id}
+	if err = models.GetExam(models.PreloadQuestions(), &exam); err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	var examJson serializers.ExamJson
+	examJson.Parse(exam)
+	c.JSON(http.StatusOK, examJson)
 }

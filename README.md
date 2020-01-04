@@ -18,7 +18,7 @@ Code | Chức năng | Mô tả | APIs
 2 | Xem danh sách bài thi | Hiển thị sau khi chọn môn học | `GET /api/subjects/:id/exams`
 3 | Ôn tập | Hiển thị sau khi ấn `Ôn tập` tại `#2` | định nghĩa sau
 4 | Thi thử | Hiển thị sau khi ấn `Thi thử` tại `#2` | định nghĩa sau
-5 | Xem bài thi | Hiển thị sau khi chọn bài thi tại `#2` | `GET /api/subjects/:id/exams/:id`
+5 | Xem bài thi | Hiển thị sau khi chọn bài thi tại `#2` | `GET /api/exams/:id`
 6 | Thi chính thức | Hiển thị sau khi ấn `Làm bài` tại `#5` | `GET /api/exams/:id/test`
 7 | Nộp bài | Bắt đầu khi submit bài thi tại `#6`| `POST /api/exams/:id`
 8 | Xem kết quả thi | Redirect tại `#7` | `/api/exams/:id/result`, `/api/exams/:id/ranking`
