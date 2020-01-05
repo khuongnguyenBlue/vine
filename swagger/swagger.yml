@@ -34,6 +34,11 @@ paths:
       responses:
         "200":
           description: Đăng nhập thành công
+          schema:
+            properties:
+              token:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ikhvcm5ldHRyYW5zbHVjZlW50IiwidXNlcl9pZCI6MywiZXhwIjoxNTc4MTU5MTAzLCJpc3MiOiJLaHVvbmcgTmd1eWVuIn0.2hL3LHxpq6LvYO7rTbBxfcRVnH-fBYa-ODxK3SN1jus
         "400":
           description: Thông tin đăng nhập không hợp lệ
         "401":
@@ -53,6 +58,13 @@ paths:
           description: success
           schema:
             $ref: "#/definitions/SubjectsList"
+        "401":
+          description: Unauthorized
+          schema:
+            properties:
+              error:
+                type: string
+                example: Invalid token / Token has been expired
         "503":
           description: Lỗi kết nối database
   /subjects/:id/exams:
@@ -70,8 +82,41 @@ paths:
           description: success
           schema:
             $ref: "#/definitions/ExamsList"
+        "401":
+          description: Unauthorized
+          schema:
+            properties:
+              error:
+                type: string
+                example: Invalid token / Token has been expired
         "503":
           description: Lỗi kết nối database
+  /exams/:id:
+    get:
+      tags:
+        - exam
+      summary: Xem bài thi
+      description: ""
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: "#/definitions/Exam"
+        "400":
+          description: ID truyền không hợp lệ
+        "401":
+          description: Unauthorized
+          schema:
+            properties:
+              error:
+                type: string
+                example: Invalid token / Token has been expired
+        "404":
+          description: Không tìm thấy bài thi
 
 definitions:
   Auth:

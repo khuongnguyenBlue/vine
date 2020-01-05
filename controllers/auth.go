@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/khuongnguyenBlue/vine/configs"
 	"github.com/khuongnguyenBlue/vine/models"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/khuongnguyenBlue/vine/utils"
 	"gopkg.in/go-playground/validator.v9"
 	"log"
 	"net/http"
@@ -30,12 +30,12 @@ func Login(c *gin.Context) {
 			log.Println(err.Type())
 			log.Println()
 		}
-		c.JSON(http.StatusBadRequest, gin.H{})
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
 	var user models.User
-	encryptedPassword, _ := encryptPassword(password)
+	encryptedPassword, _ := utils.EncryptPassword(password)
 
 	// tạm thời tạo mới tài khoản nếu nhập SĐT mới
 	err := configs.DB.Where(models.User{PhoneNumber: phoneNumber}).
@@ -44,37 +44,23 @@ func Login(c *gin.Context) {
 
 	if err != nil {
 		log.Println("Something's wrong")
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
 	if user.ID == 0 {
 		configs.DB.Create(&user)
-	} else if !comparePassword(user.EncryptedPassword, password) {
+	} else if !utils.ComparePassword(user.EncryptedPassword, password) {
 		log.Println("Wrong password")
-		c.JSON(http.StatusUnauthorized, gin.H{})
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{})
-}
-
-func encryptPassword(input string) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(input), 4)
+	token, err := utils.GenerateToken(user.Name, user.ID)
 	if err != nil {
-		log.Println(err)
-		return "", err
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
 
-	return string(hash), nil
-}
-
-func comparePassword(encryptedPassword string, input string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(encryptedPassword), []byte(input))
-	if err != nil {
-		log.Println(err)
-		return false
-	}
-
-	return true
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }

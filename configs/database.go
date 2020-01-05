@@ -35,5 +35,5 @@ func DBUrl(dbConfig *DBConfig) string {
 		dbConfig.User,
 		dbConfig.DBName,
 		dbConfig.Password,
-		)
+	)
 }
