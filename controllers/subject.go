@@ -2,21 +2,18 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/khuongnguyenBlue/vine/configs"
-	"github.com/khuongnguyenBlue/vine/models"
-	"github.com/khuongnguyenBlue/vine/serializers"
+	"github.com/khuongnguyenBlue/vine/dtos"
 	"net/http"
 )
 
-func GetSubjects(c *gin.Context) {
-	var subjects []models.Subject
-	err := models.GetSubjects(configs.DB, &subjects)
+func (ctl *Controller) GetSubjects(c *gin.Context) {
+	subjects, err := ctl.SubjectService.Fetch()
 	if err != nil {
 		c.AbortWithStatus(http.StatusServiceUnavailable)
 		return
 	}
 
-	var subjectsJson serializers.SubjectsJson
-	subjectsJson.Parse(subjects)
-	c.JSON(http.StatusOK, subjectsJson)
+	var subjectsDTO dtos.SubjectsList
+	subjectsDTO.Extract(subjects)
+	c.JSON(http.StatusOK, subjectsDTO)
 }

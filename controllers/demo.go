@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func Demo(c *gin.Context) {
+func (ctl *Controller) Demo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "demo",
 	})

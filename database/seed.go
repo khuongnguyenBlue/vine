@@ -1,43 +1,39 @@
-package seeds
+package database
 
 import (
 	"github.com/Pallinder/go-randomdata"
-	"github.com/khuongnguyenBlue/vine/configs"
+	"github.com/jinzhu/gorm"
 	"github.com/khuongnguyenBlue/vine/models"
 	"log"
 )
 
-func All(c chan error) {
-	if ssErr := seedSubjects(); ssErr != nil {
-		c <- ssErr
-		return
+func SeedData(db *gorm.DB) error {
+	if ssErr := seedSubjects(db); ssErr != nil {
+		return ssErr
 	}
 
-	if sqErr := seedQuestions(); sqErr != nil {
-		c <- sqErr
-		return
+	if sqErr := seedQuestions(db); sqErr != nil {
+		return sqErr
 	}
 
-	if seErr := seedExams(); seErr != nil {
-		c <- seErr
-		return
+	if seErr := seedExams(db); seErr != nil {
+		return seErr
 	}
 
-	if sqaErr := seedQuestionAnswers(); sqaErr != nil {
-		c <- sqaErr
-		return
+	if sqaErr := seedQuestionAnswers(db); sqaErr != nil {
+		return sqaErr
 	}
 
-	c <- nil
+	return nil
 }
 
-func seedSubjects() error {
-	if !configs.DB.First(&models.Subject{}).RecordNotFound() {
+func seedSubjects(db *gorm.DB) error {
+	if !db.First(&models.Subject{}).RecordNotFound() {
 		log.Println("Subject existed")
 		return nil
 	}
 
-	tx := configs.DB.Begin()
+	tx := db.Begin()
 	if tx.Error != nil {
 		return tx.Error
 	}
@@ -58,19 +54,19 @@ func seedSubjects() error {
 	return nil
 }
 
-func seedQuestions() error {
-	if !configs.DB.First(&models.Question{}).RecordNotFound() {
+func seedQuestions(db *gorm.DB) error {
+	if !db.First(&models.Question{}).RecordNotFound() {
 		log.Println("Question existed")
 		return nil
 	}
 
-	tx := configs.DB.Begin()
+	tx := db.Begin()
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var subjects []models.Subject
-	if err := models.GetSubjects(configs.DB, &subjects); err != nil {
+	if err := tx.Find(&subjects).Error; err != nil {
 		return err
 	}
 
@@ -92,19 +88,19 @@ func seedQuestions() error {
 	return nil
 }
 
-func seedExams() error {
-	if !configs.DB.First(&models.Exam{}).RecordNotFound() {
+func seedExams(db *gorm.DB) error {
+	if !db.First(&models.Exam{}).RecordNotFound() {
 		log.Println("Exam existed")
 		return nil
 	}
 
-	tx := configs.DB.Begin()
+	tx := db.Begin()
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var subjects []models.Subject
-	if err := models.GetSubjects(models.PreloadQuestions(), &subjects); err != nil {
+	if err := tx.Preload("Questions").Find(&subjects).Error; err != nil {
 		return err
 	}
 
@@ -133,19 +129,19 @@ func seedExams() error {
 	return nil
 }
 
-func seedQuestionAnswers() error {
-	if !configs.DB.First(&models.QuestionAnswer{}).RecordNotFound() {
+func seedQuestionAnswers(db *gorm.DB) error {
+	if !db.First(&models.QuestionAnswer{}).RecordNotFound() {
 		log.Println("Question answers existed")
 		return nil
 	}
 
-	tx := configs.DB.Begin()
+	tx := db.Begin()
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var questions []models.Question
-	if err := models.GetQuestions(configs.DB, &questions); err != nil {
+	if err := tx.Find(&questions).Error; err != nil {
 		return err
 	}
 
