@@ -3,15 +3,15 @@ package dtos
 import "github.com/khuongnguyenBlue/vine/models"
 
 type Exam struct {
-	ID             uint   `json:"id"`
-	Name           string `json:"name"`
-	TimeAllow      uint   `json:"time_allow"`
-	Status         uint   `json:"status"`
-	QuestionsCount int    `json:"questions_count"`
-	SubjectID      uint   `json:"subject_id"`
+	ID             uint              `json:"id"`
+	Name           string            `json:"name"`
+	TimeAllow      uint              `json:"time_allow"`
+	Status         models.ExamStatus `json:"status"`
+	QuestionsCount int               `json:"questions_count"`
+	SubjectID      uint              `json:"subject_id"`
 }
 
-func (e *Exam) Extract(exam models.Exam)  {
+func (e *Exam) Extract(exam models.Exam) {
 	e.ID = exam.ID
 	e.Name = exam.Name
 	e.TimeAllow = exam.TimeAllow
@@ -24,7 +24,7 @@ type ExamsList struct {
 	Exams []Exam `json:"exams"`
 }
 
-func (el *ExamsList) Extract(exams []models.Exam)  {
+func (el *ExamsList) Extract(exams []models.Exam) {
 	for _, exam := range exams {
 		var e Exam
 		e.Extract(exam)
@@ -32,3 +32,22 @@ func (el *ExamsList) Extract(exams []models.Exam)  {
 	}
 }
 
+type FullExam struct {
+	ID        uint              `json:"id"`
+	Name      string            `json:"name"`
+	TimeAllow uint              `json:"time_allow"`
+	Status    models.ExamStatus `json:"status"`
+	SubjectID uint              `json:"subject_id"`
+	Questions QuestionsList     `json:"questions"`
+}
+
+func (fe *FullExam) Extract(exam models.Exam) {
+	fe.ID = exam.ID
+	fe.Name = exam.Name
+	fe.TimeAllow = exam.TimeAllow
+	fe.Status = exam.Status
+	fe.SubjectID = exam.SubjectID
+	var questionsList QuestionsList
+	questionsList.Extract(exam.Questions)
+	fe.Questions = questionsList
+}
