@@ -9,7 +9,7 @@ import (
 func (ctl *Controller) GetSubjects(c *gin.Context) {
 	subjects, err := ctl.SubjectService.Fetch()
 	if err != nil {
-		c.AbortWithStatus(http.StatusServiceUnavailable)
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 

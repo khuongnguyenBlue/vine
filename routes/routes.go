@@ -10,6 +10,7 @@ func Setup(c *controllers.Controller) *gin.Engine {
 	r := gin.Default()
 	api := r.Group("/api")
 	api.POST("login", c.Login)
+	api.POST("register", c.Register)
 	api.Use(jwt.JWT())
 	{
 		api.GET("demo", c.Demo)
