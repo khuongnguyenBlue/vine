@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 basePath: /api
 tags:
-  - name: auth
+  - name: session
     description: Login, logout
   - name: subject
     description: Môn học
@@ -17,7 +17,7 @@ paths:
   /login:
     post:
       tags:
-        - auth
+        - session
       summary: Đăng nhập
       description: ""
       consumes:
@@ -30,7 +30,7 @@ paths:
           description: Thông tin form
           required: true
           schema:
-            $ref: "#/definitions/Auth"
+            $ref: "#/definitions/LoginAccount"
       responses:
         "200":
           description: Đăng nhập thành công
@@ -43,6 +43,28 @@ paths:
           description: Thông tin đăng nhập không hợp lệ
         "401":
           description: Mật khẩu không chính xác
+  /register:
+    post:
+      tags:
+        - session
+      summary: Đăng ký
+      description: ""
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          description: form đăng ký
+          required: true
+          schema:
+            $ref: "#/definitions/RegisterInfo"
+      responses:
+        "200":
+          description: Đăng ký thành công
+        "400":
+          description: Thông tin đăng ký không hợp lệ
   /subjects:
     get:
       tags:
@@ -65,8 +87,6 @@ paths:
               error:
                 type: string
                 example: Invalid token / Token has been expired
-        "503":
-          description: Lỗi kết nối database
   /subjects/:id/exams:
     get:
       tags:
@@ -94,8 +114,6 @@ paths:
               error:
                 type: string
                 example: Invalid token / Token has been expired
-        "503":
-          description: Lỗi kết nối database
   /exams/:id:
     get:
       tags:
@@ -160,12 +178,23 @@ paths:
           description: Không tìm thấy bài thi
 
 definitions:
-  Auth:
+  LoginAccount:
     properties:
       phone_number:
         type: string
         example: 0303030303
       password:
+        type: string
+        example: abcxyz
+  RegisterInfo:
+    properties:
+      phone_number:
+        type: string
+        example: 0303030303
+      password:
+        type: string
+        example: abcxyz
+      confirm_password:
         type: string
         example: abcxyz
   Subject:

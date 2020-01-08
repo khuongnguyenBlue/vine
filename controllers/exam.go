@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/khuongnguyenBlue/vine/dtos"
+	"github.com/khuongnguyenBlue/vine/pkg/e"
 	"github.com/khuongnguyenBlue/vine/utils"
 	"net/http"
 )
@@ -10,18 +11,18 @@ import (
 func (ctl *Controller) GetExams(c *gin.Context) {
 	id, err := utils.GetIDParams(c)
 	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, e.NewError(e.InvalidParams))
 		return
 	}
 
 	if _, err = ctl.SubjectService.GetByID(id); err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatusJSON(http.StatusNotFound, e.NewError(e.NotFound))
 		return
 	}
 
 	exams, err := ctl.ExamService.FetchBySubjectID(id)
 	if err != nil {
-		c.AbortWithStatus(http.StatusServiceUnavailable)
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
@@ -33,13 +34,13 @@ func (ctl *Controller) GetExams(c *gin.Context) {
 func (ctl *Controller) GetExam(c *gin.Context) {
 	id, err := utils.GetIDParams(c)
 	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, e.NewError(e.InvalidParams))
 		return
 	}
 
 	exam, err := ctl.ExamService.GetByID(id)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatusJSON(http.StatusNotFound, e.NewError(e.NotFound))
 		return
 	}
 
@@ -51,13 +52,13 @@ func (ctl *Controller) GetExam(c *gin.Context) {
 func (ctl *Controller) TakeExam(c *gin.Context) {
 	id, err := utils.GetIDParams(c)
 	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, e.NewError(e.InvalidParams))
 		return
 	}
 
 	exam, err := ctl.ExamService.GetByIDWithQuestionsAnswers(id)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatusJSON(http.StatusNotFound, e.NewError(e.NotFound))
 		return
 	}
 
