@@ -1,4 +1,4 @@
-package configs
+package database
 
 import (
 	"fmt"
@@ -6,9 +6,7 @@ import (
 	"os"
 )
 
-var DB *gorm.DB
-
-type DBConfig struct {
+type dbConfig struct {
 	Host     string
 	Port     string
 	User     string
@@ -16,8 +14,8 @@ type DBConfig struct {
 	Password string
 }
 
-func BuildDBConfig() *DBConfig {
-	dbConfig := DBConfig{
+func buildDBConfig() *dbConfig {
+	dbConfig := dbConfig{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
 		User:     os.Getenv("DB_USER"),
@@ -27,7 +25,7 @@ func BuildDBConfig() *DBConfig {
 	return &dbConfig
 }
 
-func DBUrl(dbConfig *DBConfig) string {
+func pgConnectUrl(dbConfig *dbConfig) string {
 	return fmt.Sprintf(
 		"host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		dbConfig.Host,
@@ -36,4 +34,8 @@ func DBUrl(dbConfig *DBConfig) string {
 		dbConfig.DBName,
 		dbConfig.Password,
 	)
+}
+
+func GetPgConnnection() (*gorm.DB, error) {
+	return gorm.Open("postgres", pgConnectUrl(buildDBConfig()))
 }

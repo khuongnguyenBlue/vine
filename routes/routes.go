@@ -6,16 +6,16 @@ import (
 	"github.com/khuongnguyenBlue/vine/middlewares/jwt"
 )
 
-func Setup() *gin.Engine {
+func Setup(c *controllers.Controller) *gin.Engine {
 	r := gin.Default()
 	api := r.Group("/api")
-	api.POST("login", controllers.Login)
+	api.POST("login", c.Login)
 	api.Use(jwt.JWT())
 	{
-		api.GET("demo", controllers.Demo)
-		api.GET("subjects", controllers.GetSubjects)
-		api.GET("subjects/:id/exams", controllers.GetExams)
-		api.GET("exams/:id", controllers.GetExam)
+		api.GET("demo", c.Demo)
+		api.GET("subjects", c.GetSubjects)
+		api.GET("subjects/:id/exams", c.GetExams)
+		api.GET("exams/:id", c.GetExam)
 	}
 	return r
 }

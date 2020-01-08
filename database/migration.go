@@ -1,12 +1,12 @@
-package migrations
+package database
 
 import (
-	"github.com/khuongnguyenBlue/vine/configs"
+	"github.com/jinzhu/gorm"
 	"github.com/khuongnguyenBlue/vine/models"
 )
 
-func Migrate() {
-	configs.DB.AutoMigrate(
+func Migrate(db *gorm.DB) {
+	db.AutoMigrate(
 		models.User{},
 		models.Subject{},
 		models.Question{},

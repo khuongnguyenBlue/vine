@@ -1,8 +1,8 @@
-package serializers
+package dtos
 
 import "github.com/khuongnguyenBlue/vine/models"
 
-type ExamJson struct {
+type Exam struct {
 	ID             uint   `json:"id"`
 	Name           string `json:"name"`
 	TimeAllow      uint   `json:"time_allow"`
@@ -11,7 +11,7 @@ type ExamJson struct {
 	SubjectID      uint   `json:"subject_id"`
 }
 
-func (e *ExamJson) Parse(exam models.Exam)  {
+func (e *Exam) Extract(exam models.Exam)  {
 	e.ID = exam.ID
 	e.Name = exam.Name
 	e.TimeAllow = exam.TimeAllow
@@ -20,14 +20,14 @@ func (e *ExamJson) Parse(exam models.Exam)  {
 	e.SubjectID = exam.SubjectID
 }
 
-type ExamsJson struct {
-	Exams []ExamJson `json:"exams"`
+type ExamsList struct {
+	Exams []Exam `json:"exams"`
 }
 
-func (el *ExamsJson) Parse(exams []models.Exam)  {
+func (el *ExamsList) Extract(exams []models.Exam)  {
 	for _, exam := range exams {
-		var e ExamJson
-		e.Parse(exam)
+		var e Exam
+		e.Extract(exam)
 		el.Exams = append(el.Exams, e)
 	}
 }
