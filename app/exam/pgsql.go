@@ -31,3 +31,13 @@ func (r *repository) GetByID(id uint) (models.Exam, error) {
 
 	return exam, nil
 }
+
+func (r *repository) GetByIDWithQuestionsAnswers(id uint) (models.Exam, error) {
+	var exam = models.Exam{ID: id}
+	if err := r.Conn.Preload("Questions").Preload("Questions.QuestionAnswers").
+		First(&exam).Error; err != nil {
+		return models.Exam{}, err
+	}
+
+	return exam, nil
+}

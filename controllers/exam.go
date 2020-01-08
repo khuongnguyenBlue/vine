@@ -47,3 +47,21 @@ func (ctl *Controller) GetExam(c *gin.Context) {
 	examDTO.Extract(exam)
 	c.JSON(http.StatusOK, examDTO)
 }
+
+func (ctl *Controller) TakeExam(c *gin.Context) {
+	id, err := utils.GetIDParams(c)
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	exam, err := ctl.ExamService.GetByIDWithQuestionsAnswers(id)
+	if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	var fullExamDTO dtos.FullExam
+	fullExamDTO.Extract(exam)
+	c.JSON(http.StatusOK, fullExamDTO)
+}
