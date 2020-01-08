@@ -77,6 +77,11 @@ paths:
         - application/json
       produces:
         - application/json
+      parameters:
+        - name: id
+          in: params
+          description: ID môn học
+          required: true
       responses:
         "200":
           description: success
@@ -101,11 +106,47 @@ paths:
         - application/json
       produces:
         - application/json
+      parameters:
+        - name: id
+          in: params
+          description: ID bài thi
+          required: true
       responses:
         "200":
           description: success
           schema:
             $ref: "#/definitions/Exam"
+        "400":
+          description: ID truyền không hợp lệ
+        "401":
+          description: Unauthorized
+          schema:
+            properties:
+              error:
+                type: string
+                example: Invalid token / Token has been expired
+        "404":
+          description: Không tìm thấy bài thi
+  /exams/:id/test:
+    get:
+      tags:
+        - exam
+      summary: Làm bài thi
+      description: ""
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: params
+          description: ID bài thi
+          required: true
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: "#/definitions/FullExam"
         "400":
           description: ID truyền không hợp lệ
         "401":
@@ -165,3 +206,41 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/Exam"
+  QuestionAnswer:
+    properties:
+      id:
+        type: integer
+      content:
+        type: string
+        example: $30
+  Question:
+    properties:
+      id:
+        type: integer
+      content:
+        type: string
+        example: How much is this?
+      question_answers:
+        type: array
+        items:
+          $ref: "#/definitions/QuestionAnswer"
+  FullExam:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        example: Kiểm tra giữa kỳ
+      time_allow:
+        type: integer
+        example: 30
+      status:
+        type: integer
+        example: 1
+      subject_id:
+        type: integer
+        example: 1
+      questions:
+        type: array
+        items:
+          $ref: "#/definitions/Question"
