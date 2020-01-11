@@ -66,3 +66,48 @@ func (ctl *Controller) TakeExam(c *gin.Context) {
 	fullExamDTO.Extract(exam)
 	c.JSON(http.StatusOK, fullExamDTO)
 }
+
+func (ctl *Controller) SubmitExam(c *gin.Context) {
+	id, err := utils.GetIDParams(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, e.NewError(e.InvalidParams))
+		return
+	}
+
+	var submittedExam dtos.SubmittedExam
+	if err := c.ShouldBindJSON(&submittedExam); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, e.NewError(e.InvalidParams))
+		return
+	}
+
+	if id != submittedExam.ID {
+		c.AbortWithStatusJSON(http.StatusBadRequest, e.NewError(e.InvalidParams))
+		return
+	}
+
+	userID, ok := c.Get("user_id")
+	if !ok {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	uUserId, ok := userID.(uint)
+	if !ok {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	examResult, operationCode := ctl.ExamService.SaveSubmittedExam(submittedExam, uUserId)
+	switch operationCode {
+	case http.StatusInternalServerError:
+		c.AbortWithStatus(http.StatusInternalServerError)
+	case http.StatusBadRequest:
+		c.AbortWithStatusJSON(http.StatusBadRequest, e.NewError(e.InvalidParams))
+	case http.StatusNotFound:
+		c.AbortWithStatusJSON(http.StatusNotFound, e.NewError(e.NotFound))
+	default:
+		var briefResultDTO dtos.BriefResult
+		briefResultDTO.Extract(examResult)
+		c.JSON(http.StatusOK, briefResultDTO)
+	}
+}

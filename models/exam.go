@@ -14,6 +14,16 @@ type Exam struct {
 	TimeAllow uint       `gorm:"not null"`
 	Status    ExamStatus       `gorm:"default:0"`
 	Questions []Question `gorm:"many2many:exam_questions"`
-	SubjectID uint       `gorm:"not null"`
+	SubjectID uint       `gorm:"not null;index"`
 	Subject   Subject
+}
+
+func (e *Exam) GetQuestionByID(id uint) (Question, bool) {
+	for _, question := range e.Questions {
+		if question.ID == id {
+			return question, true
+		}
+	}
+
+	return Question{}, false
 }

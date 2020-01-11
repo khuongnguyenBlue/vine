@@ -51,3 +51,19 @@ func (fe *FullExam) Extract(exam models.Exam) {
 	questionsList.Extract(exam.Questions)
 	fe.Questions = questionsList
 }
+
+type SubmittedExam struct {
+	ID                uint                 `json:"id"`
+	SpentTime uint `json:"spent_time" binding:"required"`
+	AnsweredQuestions []QuestionWithAnswer `json:"answered_questions" binding:"required"`
+}
+
+type BriefResult struct {
+	Score uint `json:"score"`
+	SpentTime uint `json:"spent_time"`
+}
+
+func (er *BriefResult) Extract(result models.ExamResult) {
+	er.Score = result.Score
+	er.SpentTime = result.SpentTime
+}
