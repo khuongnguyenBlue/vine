@@ -211,6 +211,36 @@ paths:
                 example: Invalid token / Token has been expired
         "404":
           description: Không tìm thấy bài thi
+  /exams/:id/review:
+    get:
+      tags:
+        - exam
+      summary: Review kết quả
+      description: ""
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          type: integer
+          in: path
+          description: ID bài thi
+          required: true
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: "#/definitions/ReviewExam"
+        "401":
+          description: Unauthorized
+          schema:
+            properties:
+              error:
+                type: string
+                example: Invalid token / Token has been expired
+        "404":
+          description: Không tìm thấy bài thi
 
 definitions:
   LoginAccount:
@@ -341,3 +371,45 @@ definitions:
       spent_time:
         type: integer
         example: 300
+  ReviewExam:
+    properties:
+      id:
+        type: integer
+        example: 1
+      name:
+        type: string
+        example: Kiểm tra giữa kỳ
+      time_allow:
+        type: integer
+        example: 30
+      status:
+        type: integer
+        example: 1
+      subject_id:
+        type: integer
+        example: 1
+      review_questions:
+        type: array
+        items:
+          $ref: "#/definitions/ReviewQuestion"
+  ReviewQuestion:
+    properties:
+      id:
+        type: integer
+        example: 1
+      content:
+        type: string
+        example: How much is this?
+      review_answers:
+        type: array
+        items:
+          $ref: "#/definitions/ReviewAnswer"
+  ReviewAnswer:
+    allOf:
+      - $ref: '#/definitions/QuestionAnswer'
+      - type: object
+        properties:
+          is_correct:
+            type: boolean
+          is_chosen:
+            type: boolean
