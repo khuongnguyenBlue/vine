@@ -54,12 +54,12 @@ func (fe *FullExam) Extract(exam models.Exam) {
 
 type SubmittedExam struct {
 	ID                uint                 `json:"id"`
-	SpentTime uint `json:"spent_time" binding:"required"`
+	SpentTime         uint                 `json:"spent_time" binding:"required"`
 	AnsweredQuestions []QuestionWithAnswer `json:"answered_questions" binding:"required"`
 }
 
 type BriefResult struct {
-	Score uint `json:"score"`
+	Score     uint `json:"score"`
 	SpentTime uint `json:"spent_time"`
 }
 
