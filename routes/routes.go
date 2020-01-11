@@ -19,6 +19,7 @@ func Setup(c *controllers.Controller) *gin.Engine {
 		api.GET("exams/:id", c.GetExam)
 		api.GET("exams/:id/test", c.TakeExam)
 		api.POST("exams/:id", c.SubmitExam)
+		api.GET("exams/:id/review", c.ReviewExam)
 	}
 	return r
 }

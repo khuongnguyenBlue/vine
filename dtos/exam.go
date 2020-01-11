@@ -2,22 +2,32 @@ package dtos
 
 import "github.com/khuongnguyenBlue/vine/models"
 
-type Exam struct {
+type BaseExam struct {
 	ID             uint              `json:"id"`
 	Name           string            `json:"name"`
 	TimeAllow      uint              `json:"time_allow"`
 	Status         models.ExamStatus `json:"status"`
-	QuestionsCount int               `json:"questions_count"`
 	SubjectID      uint              `json:"subject_id"`
 }
 
+func (be *BaseExam) Extract(exam models.Exam) {
+	be.ID = exam.ID
+	be.Name = exam.Name
+	be.TimeAllow = exam.TimeAllow
+	be.Status = exam.Status
+	be.SubjectID = exam.SubjectID
+}
+
+type Exam struct {
+	BaseExam
+	QuestionsCount int               `json:"questions_count"`
+}
+
 func (e *Exam) Extract(exam models.Exam) {
-	e.ID = exam.ID
-	e.Name = exam.Name
-	e.TimeAllow = exam.TimeAllow
-	e.Status = exam.Status
+	var be BaseExam
+	be.Extract(exam)
+	e.BaseExam = be
 	e.QuestionsCount = len(exam.Questions)
-	e.SubjectID = exam.SubjectID
 }
 
 type ExamsList struct {
@@ -33,20 +43,14 @@ func (el *ExamsList) Extract(exams []models.Exam) {
 }
 
 type FullExam struct {
-	ID        uint              `json:"id"`
-	Name      string            `json:"name"`
-	TimeAllow uint              `json:"time_allow"`
-	Status    models.ExamStatus `json:"status"`
-	SubjectID uint              `json:"subject_id"`
+	BaseExam
 	Questions QuestionsList     `json:"questions"`
 }
 
 func (fe *FullExam) Extract(exam models.Exam) {
-	fe.ID = exam.ID
-	fe.Name = exam.Name
-	fe.TimeAllow = exam.TimeAllow
-	fe.Status = exam.Status
-	fe.SubjectID = exam.SubjectID
+	var be BaseExam
+	be.Extract(exam)
+	fe.BaseExam = be
 	var questionsList QuestionsList
 	questionsList.Extract(exam.Questions)
 	fe.Questions = questionsList
@@ -66,4 +70,27 @@ type BriefResult struct {
 func (er *BriefResult) Extract(result models.ExamResult) {
 	er.Score = result.Score
 	er.SpentTime = result.SpentTime
+}
+
+type ReviewExam struct {
+	BaseExam
+	BriefResult
+	ReviewQuestions []ReviewQuestion  `json:"review_questions"`
+}
+
+func (re *ReviewExam) Extract(exam models.Exam, examResult models.ExamResult)  {
+	var be BaseExam
+	be.Extract(exam)
+	re.BaseExam = be
+
+	var br BriefResult
+	br.Extract(examResult)
+	re.BriefResult = br
+
+	for _, question := range exam.Questions {
+		userAnswerID := examResult.GetUserAnswerID(question.ID)
+		var reviewQuestion ReviewQuestion
+		reviewQuestion.Extract(question, userAnswerID)
+		re.ReviewQuestions = append(re.ReviewQuestions, reviewQuestion)
+	}
 }

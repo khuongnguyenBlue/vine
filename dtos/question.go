@@ -30,3 +30,20 @@ type QuestionWithAnswer struct {
 	ID       uint `json:"id"`
 	AnswerID uint `json:"answer_id"`
 }
+
+type ReviewQuestion struct {
+	ID            uint           `json:"id"`
+	Content       string         `json:"content"`
+	ReviewAnswers []ReviewAnswer `json:"review_answers"`
+}
+
+func (rq *ReviewQuestion) Extract(question models.Question, userAnswerID uint) {
+	rq.ID = question.ID
+	rq.Content = question.Content
+
+	for _, answer := range question.QuestionAnswers {
+		var reviewAnswer ReviewAnswer
+		reviewAnswer.Extract(answer, userAnswerID)
+		rq.ReviewAnswers = append(rq.ReviewAnswers, reviewAnswer)
+	}
+}

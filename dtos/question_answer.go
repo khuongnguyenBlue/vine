@@ -21,3 +21,17 @@ func (al *AnswersList) Extract(answers []models.QuestionAnswer) {
 		*al = append(*al, qa)
 	}
 }
+
+type ReviewAnswer struct {
+	QuestionAnswer
+	IsCorrect bool `json:"is_correct"`
+	IsChosen  bool `json:"is_chosen"`
+}
+
+func (ra *ReviewAnswer) Extract(answer models.QuestionAnswer, userAnswerID uint) {
+	var qa QuestionAnswer
+	qa.Extract(answer)
+	ra.QuestionAnswer = qa
+	ra.IsCorrect = answer.IsCorrect
+	ra.IsChosen = answer.ID == userAnswerID
+}
