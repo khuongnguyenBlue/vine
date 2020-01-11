@@ -85,19 +85,13 @@ func (ctl *Controller) SubmitExam(c *gin.Context) {
 		return
 	}
 
-	userID, ok := c.Get("user_id")
+	userID, ok := utils.GetUserID(c)
 	if !ok {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	uUserId, ok := userID.(uint)
-	if !ok {
-		c.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	examResult, operationCode := ctl.ExamService.SaveSubmittedExam(submittedExam, uUserId)
+	examResult, operationCode := ctl.ExamService.SaveSubmittedExam(submittedExam, userID)
 	switch operationCode {
 	case http.StatusInternalServerError:
 		c.AbortWithStatus(http.StatusInternalServerError)
@@ -109,5 +103,27 @@ func (ctl *Controller) SubmitExam(c *gin.Context) {
 		var briefResultDTO dtos.BriefResult
 		briefResultDTO.Extract(examResult)
 		c.JSON(http.StatusOK, briefResultDTO)
+	}
+}
+
+func (ctl *Controller) ReviewExam(c *gin.Context)  {
+	id, err := utils.GetIDParams(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, e.NewError(e.InvalidParams))
+		return
+	}
+
+	userID, ok := utils.GetUserID(c)
+	if !ok {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	reviewExam, operationCode := ctl.ExamService.GetExamForReview(id, userID)
+	switch operationCode {
+	case http.StatusNotFound:
+		c.AbortWithStatusJSON(http.StatusNotFound, e.NewError(e.NotFound))
+	default:
+		c.JSON(http.StatusOK, reviewExam)
 	}
 }

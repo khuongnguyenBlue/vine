@@ -7,4 +7,5 @@ type Repository interface {
 	GetByID(id uint) (models.Exam, error)
 	GetByIDWithQuestionsAnswers(id uint) (models.Exam, error)
 	CreateExamResult(examResult models.ExamResult) (models.ExamResult, error)
+	GetExamResult(examID, userID uint) (models.ExamResult, error)
 }

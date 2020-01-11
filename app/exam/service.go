@@ -11,6 +11,7 @@ type Service interface {
 	GetByID(id uint) (models.Exam, error)
 	GetByIDWithQuestionsAnswers(id uint) (models.Exam, error)
 	SaveSubmittedExam(submittedExam dtos.SubmittedExam, userID uint) (models.ExamResult, int)
+	GetExamForReview(examID, userID uint) (dtos.ReviewExam, int)
 }
 
 type service struct {
@@ -71,4 +72,20 @@ func (s *service) SaveSubmittedExam(submittedExam dtos.SubmittedExam, userID uin
 
 	examResult.Exam = exam
 	return examResult, 0
+}
+
+func (s *service) GetExamForReview(examID, userID uint) (dtos.ReviewExam, int) {
+	exam, err := s.Repo.GetByIDWithQuestionsAnswers(examID)
+	if err != nil {
+		return dtos.ReviewExam{}, http.StatusNotFound
+	}
+
+	examResult, err := s.Repo.GetExamResult(examID, userID)
+	if err != nil {
+		return dtos.ReviewExam{}, http.StatusNotFound
+	}
+
+	var reviewExamDTO dtos.ReviewExam
+	reviewExamDTO.Extract(exam, examResult)
+	return reviewExamDTO, 0
 }

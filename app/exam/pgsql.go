@@ -49,3 +49,13 @@ func (r *repository) CreateExamResult(examResult models.ExamResult) (models.Exam
 
 	return examResult, nil
 }
+
+func (r *repository) GetExamResult(examID, userID uint) (models.ExamResult, error)  {
+	var examResult models.ExamResult
+	if err := r.Conn.Preload("UserAnswers").Where("exam_id = ? AND user_id = ?", examID, userID).
+		First(&examResult).Error; err != nil {
+		return models.ExamResult{}, err
+	}
+
+	return examResult, nil
+}

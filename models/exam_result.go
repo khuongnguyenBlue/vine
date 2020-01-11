@@ -10,3 +10,13 @@ type ExamResult struct {
 	SpentTime   uint `gorm:"not null;index"`
 	UserAnswers []UserAnswer
 }
+
+func (er *ExamResult) GetUserAnswerID(questionID uint) uint {
+	for _, ua := range er.UserAnswers {
+		if ua.QuestionID == questionID {
+			return ua.AnswerID
+		}
+	}
+
+	return 0
+}
