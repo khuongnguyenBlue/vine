@@ -25,3 +25,8 @@ func (ql *QuestionsList) Extract(questions []models.Question) {
 		*ql = append(*ql, q)
 	}
 }
+
+type QuestionWithAnswer struct {
+	ID       uint `json:"id"`
+	AnswerID uint `json:"answer_id"`
+}

@@ -12,5 +12,9 @@ func Migrate(db *gorm.DB) {
 		models.Question{},
 		models.Exam{},
 		models.QuestionAnswer{},
+		models.ExamResult{},
+		models.UserAnswer{},
 	)
+	db.Model(&models.Exam{}).AddIndex("idx_esubject_id", "subject_id")
+	db.Model(&models.Question{}).AddIndex("idx_qsubject_id", "subject_id")
 }

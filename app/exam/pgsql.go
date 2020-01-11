@@ -41,3 +41,11 @@ func (r *repository) GetByIDWithQuestionsAnswers(id uint) (models.Exam, error) {
 
 	return exam, nil
 }
+
+func (r *repository) CreateExamResult(examResult models.ExamResult) (models.ExamResult, error) {
+	if err := r.Conn.Create(&examResult).Error; err != nil {
+		return models.ExamResult{}, err
+	}
+
+	return examResult, nil
+}
