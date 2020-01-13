@@ -42,20 +42,13 @@ func (r *repository) GetByIDWithQuestionsAnswers(id uint) (models.Exam, error) {
 	return exam, nil
 }
 
-func (r *repository) CreateExamResult(examResult models.ExamResult) (models.ExamResult, error) {
-	if err := r.Conn.Create(&examResult).Error; err != nil {
-		return models.ExamResult{}, err
+func (r *repository) GetByIDWithExamResults(id uint) (models.Exam, error) {
+	var exam = models.Exam{ID: id}
+	if err := r.Conn.Preload("ExamResults", func(db *gorm.DB) *gorm.DB {
+		return db.Order("exam_results.score DESC, spent_time")
+	}).First(&exam).Error; err != nil {
+		return models.Exam{}, err
 	}
 
-	return examResult, nil
-}
-
-func (r *repository) GetExamResult(examID, userID uint) (models.ExamResult, error)  {
-	var examResult models.ExamResult
-	if err := r.Conn.Preload("UserAnswers").Where("exam_id = ? AND user_id = ?", examID, userID).
-		First(&examResult).Error; err != nil {
-		return models.ExamResult{}, err
-	}
-
-	return examResult, nil
+	return exam, nil
 }

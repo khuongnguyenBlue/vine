@@ -16,6 +16,7 @@ type Exam struct {
 	Questions []Question `gorm:"many2many:exam_questions"`
 	SubjectID uint       `gorm:"not null;index"`
 	Subject   Subject
+	ExamResults []ExamResult
 }
 
 func (e *Exam) GetQuestionByID(id uint) (Question, bool) {
