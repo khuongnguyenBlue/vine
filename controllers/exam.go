@@ -127,3 +127,19 @@ func (ctl *Controller) ReviewExam(c *gin.Context)  {
 		c.JSON(http.StatusOK, reviewExam)
 	}
 }
+
+func (ctl *Controller) GetRanking(c *gin.Context) {
+	id, err := utils.GetIDParams(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, e.NewError(e.InvalidParams))
+		return
+	}
+
+	examRanking, err := ctl.ExamService.GetExamRanking(id)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, e.NewError(e.NotFound))
+		return
+	}
+
+	c.JSON(http.StatusOK, examRanking)
+}

@@ -21,7 +21,7 @@ Code | Chức năng | Mô tả | APIs
 5 | Xem bài thi | Hiển thị sau khi chọn bài thi tại `#2` | `GET /api/exams/:id`
 6 | Thi chính thức | Hiển thị sau khi ấn `Làm bài` tại `#5` | `GET /api/exams/:id/test`
 7 | Nộp bài | Bắt đầu khi submit bài thi tại `#6`| `POST /api/exams/:id`
-8 | Xem kết quả thi | Redirect tại `#7` | `/api/exams/:id/result`, `/api/exams/:id/ranking`
+8 | Xem kết quả thi | Redirect tại `#7` | `/api/exams/:id/review`, `/api/exams/:id/ranking`
 
 **Role Trainer**
 

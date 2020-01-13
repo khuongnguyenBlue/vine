@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/khuongnguyenBlue/vine/app/exam_result"
 	"github.com/khuongnguyenBlue/vine/app/session"
 	"github.com/khuongnguyenBlue/vine/app/exam"
 	"github.com/khuongnguyenBlue/vine/app/subject"
@@ -16,7 +17,7 @@ type Controller struct {
 func NewController(db *gorm.DB) *Controller {
 	sessionService := session.NewService(session.NewPgsqlRepository(db))
 	subjectService := subject.NewService(subject.NewPgsqlRepository(db))
-	examService := exam.NewService(exam.NewPgsqlRepository(db))
+	examService := exam.NewService(exam.NewPgsqlRepository(db), exam_result.NewPgsqlRepository(db))
 
 	return &Controller{
 		SessionService: sessionService,

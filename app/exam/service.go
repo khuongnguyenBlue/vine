@@ -1,6 +1,7 @@
 package exam
 
 import (
+	"github.com/khuongnguyenBlue/vine/app/exam_result"
 	"github.com/khuongnguyenBlue/vine/dtos"
 	"github.com/khuongnguyenBlue/vine/models"
 	"net/http"
@@ -12,30 +13,32 @@ type Service interface {
 	GetByIDWithQuestionsAnswers(id uint) (models.Exam, error)
 	SaveSubmittedExam(submittedExam dtos.SubmittedExam, userID uint) (models.ExamResult, int)
 	GetExamForReview(examID, userID uint) (dtos.ReviewExam, int)
+	GetExamRanking(examID uint) (dtos.ExamRanking, error)
 }
 
 type service struct {
-	Repo Repository
+	examRepo Repository
+	examResultRepo exam_result.Repository
 }
 
-func NewService(repo Repository) Service {
-	return &service{Repo: repo}
+func NewService(examRepo Repository, examResultRepo exam_result.Repository) Service {
+	return &service{examRepo: examRepo, examResultRepo: examResultRepo}
 }
 
 func (s *service) FetchBySubjectID(subjectID uint) ([]models.Exam, error) {
-	return s.Repo.FetchBySubjectID(subjectID)
+	return s.examRepo.FetchBySubjectID(subjectID)
 }
 
 func (s *service) GetByID(id uint) (models.Exam, error) {
-	return s.Repo.GetByID(id)
+	return s.examRepo.GetByID(id)
 }
 
 func (s *service) GetByIDWithQuestionsAnswers(id uint) (models.Exam, error) {
-	return s.Repo.GetByIDWithQuestionsAnswers(id)
+	return s.examRepo.GetByIDWithQuestionsAnswers(id)
 }
 
 func (s *service) SaveSubmittedExam(submittedExam dtos.SubmittedExam, userID uint) (models.ExamResult, int) {
-	exam, err := s.Repo.GetByIDWithQuestionsAnswers(submittedExam.ID)
+	exam, err := s.examRepo.GetByIDWithQuestionsAnswers(submittedExam.ID)
 	if err != nil {
 		return models.ExamResult{}, http.StatusNotFound
 	}
@@ -65,7 +68,7 @@ func (s *service) SaveSubmittedExam(submittedExam dtos.SubmittedExam, userID uin
 		examResult.UserAnswers = append(examResult.UserAnswers, userAnswer)
 	}
 
-	examResult, err = s.Repo.CreateExamResult(examResult)
+	examResult, err = s.examResultRepo.Create(examResult)
 	if err != nil {
 		return models.ExamResult{}, http.StatusInternalServerError
 	}
@@ -75,12 +78,12 @@ func (s *service) SaveSubmittedExam(submittedExam dtos.SubmittedExam, userID uin
 }
 
 func (s *service) GetExamForReview(examID, userID uint) (dtos.ReviewExam, int) {
-	exam, err := s.Repo.GetByIDWithQuestionsAnswers(examID)
+	exam, err := s.examRepo.GetByIDWithQuestionsAnswers(examID)
 	if err != nil {
 		return dtos.ReviewExam{}, http.StatusNotFound
 	}
 
-	examResult, err := s.Repo.GetExamResult(examID, userID)
+	examResult, err := s.examResultRepo.GetByExamIDAndUserID(examID, userID)
 	if err != nil {
 		return dtos.ReviewExam{}, http.StatusNotFound
 	}
@@ -88,4 +91,15 @@ func (s *service) GetExamForReview(examID, userID uint) (dtos.ReviewExam, int) {
 	var reviewExamDTO dtos.ReviewExam
 	reviewExamDTO.Extract(exam, examResult)
 	return reviewExamDTO, 0
+}
+
+func (s *service) GetExamRanking(examID uint) (dtos.ExamRanking, error) {
+	exam, err := s.examRepo.GetByIDWithExamResults(examID)
+	if err != nil {
+		return dtos.ExamRanking{}, err
+	}
+
+	var examRankingDTO dtos.ExamRanking
+	examRankingDTO.Extract(exam)
+	return examRankingDTO, nil
 }

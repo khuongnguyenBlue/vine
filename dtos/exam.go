@@ -94,3 +94,34 @@ func (re *ReviewExam) Extract(exam models.Exam, examResult models.ExamResult)  {
 		re.ReviewQuestions = append(re.ReviewQuestions, reviewQuestion)
 	}
 }
+
+type UserRecord struct {
+	ID uint `json:"id"`
+	UserID uint `json:"user_id"`
+	Score uint `json:"score"`
+	SpentTime uint `json:"spent_time"`
+}
+
+func (ur *UserRecord) Extract(result models.ExamResult)  {
+	ur.ID = result.ID
+	ur.UserID = result.UserID
+	ur.Score = result.Score
+	ur.SpentTime = result.SpentTime
+}
+
+type ExamRanking struct {
+	BaseExam
+	UserRecords []UserRecord `json:"user_records"`
+}
+
+func (er *ExamRanking) Extract(exam models.Exam) {
+	var be BaseExam
+	be.Extract(exam)
+	er.BaseExam = be
+
+	for _, result := range exam.ExamResults {
+		var ur UserRecord
+		ur.Extract(result)
+		er.UserRecords = append(er.UserRecords, ur)
+	}
+}
