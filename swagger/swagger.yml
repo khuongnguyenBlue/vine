@@ -241,6 +241,36 @@ paths:
                 example: Invalid token / Token has been expired
         "404":
           description: Không tìm thấy bài thi
+  /exams/:id/ranking:
+    get:
+      tags:
+        - exam
+      summary: Xếp hạng kết quả bài thi
+      description: ""
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          type: integer
+          in: path
+          description: ID bài thi
+          required: true
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: "#/definitions/ExamRanking"
+        "401":
+          description: Unauthorized
+          schema:
+            properties:
+              error:
+                type: string
+                example: Invalid token / Token has been expired
+        "404":
+          description: Không tìm thấy bài thi
 
 definitions:
   LoginAccount:
@@ -276,7 +306,7 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/Subject"
-  Exam:
+  BaseExam:
     properties:
       id:
         type: integer
@@ -290,12 +320,17 @@ definitions:
       status:
         type: integer
         example: 1
-      questions_count:
-        type: integer
-        example: 20
       subject_id:
         type: integer
         example: 1
+  Exam:
+    allOf:
+      - $ref: '#/definitions/BaseExam'
+      - type: object
+        properties:
+          questions_count:
+            type: integer
+            example: 20
   ExamsList:
     properties:
       exams:
@@ -323,26 +358,14 @@ definitions:
         items:
           $ref: "#/definitions/QuestionAnswer"
   FullExam:
-    properties:
-      id:
-        type: integer
-        example: 1
-      name:
-        type: string
-        example: Kiểm tra giữa kỳ
-      time_allow:
-        type: integer
-        example: 30
-      status:
-        type: integer
-        example: 1
-      subject_id:
-        type: integer
-        example: 1
-      questions:
-        type: array
-        items:
-          $ref: "#/definitions/Question"
+    allOf:
+      - $ref: '#/definitions/BaseExam'
+      - type: object
+        properties:
+          questions:
+            type: array
+            items:
+              $ref: "#/definitions/Question"
   QuestionWithAnswer:
     properties:
       id:
@@ -372,26 +395,14 @@ definitions:
         type: integer
         example: 300
   ReviewExam:
-    properties:
-      id:
-        type: integer
-        example: 1
-      name:
-        type: string
-        example: Kiểm tra giữa kỳ
-      time_allow:
-        type: integer
-        example: 30
-      status:
-        type: integer
-        example: 1
-      subject_id:
-        type: integer
-        example: 1
-      review_questions:
-        type: array
-        items:
-          $ref: "#/definitions/ReviewQuestion"
+    allOf:
+      - $ref: '#/definitions/BaseExam'
+      - type: object
+        properties:
+          review_questions:
+            type: array
+            items:
+              $ref: "#/definitions/ReviewQuestion"
   ReviewQuestion:
     properties:
       id:
@@ -413,3 +424,26 @@ definitions:
             type: boolean
           is_chosen:
             type: boolean
+  UserRecord:
+    properties:
+      id:
+        type: integer
+        example: 1
+      user_id:
+        type: integer
+        example: 14
+      score:
+        type: integer
+        example: 8
+      spent_time:
+        type: integer
+        example: 300
+  ExamRanking:
+    allOf:
+      - $ref: '#/definitions/BaseExam'
+      - type: object
+        properties:
+          user_records:
+            type: array
+            items:
+              $ref: "#/definitions/UserRecord"
