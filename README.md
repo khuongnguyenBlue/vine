@@ -5,7 +5,7 @@ https://app.swaggerhub.com/apis-docs/khuongnguyenBlue/vine/1.0.0
 https://www.getpostman.com/collections/f82ddeffd31c322e175b
 ## Thiết kế hệ thống
 ### Biểu đồ Usecase
-![Usecase Diagram](https://i.ibb.co/JyxhZNB/vin-exam.png)
+![Usecase Diagram](https://upanh.pro/image/qGZnxf)
 
 
 Các usecase màu trắng là các chức năng có khả năng thực hiện xong trong thời gian 1 tháng
