@@ -2,6 +2,7 @@
 http://34.80.70.61/api/demo
 ## API Doc
 https://app.swaggerhub.com/apis-docs/khuongnguyenBlue/vine/1.0.0
+https://www.getpostman.com/collections/f82ddeffd31c322e175b
 ## Thiết kế hệ thống
 ### Biểu đồ Usecase
 ![Usecase Diagram](https://i.ibb.co/JyxhZNB/vin-exam.png)
