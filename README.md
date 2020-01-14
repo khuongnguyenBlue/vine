@@ -8,21 +8,22 @@ https://www.getpostman.com/collections/f82ddeffd31c322e175b
 ![Usecase Diagram](https://s2.upanh.pro/2020/01/14/vin.exam-usecase.png)
 
 
-Các usecase màu trắng là các chức năng có khả năng thực hiện xong trong thời gian 1 tháng
+Các usecase màu trắng là các chức năng có dự kiến sẽ hoàn thành
 ### Kịch bản sử dụng
 **Role Trainee**
 
 Code | Chức năng | Mô tả | APIs
 --- | --- | --- | ---
-0 | Đăng nhập | | `POST /api/login`
-1 | Xem danh sách môn học | Hiển thị sau khi đăng nhập | `GET /api/subjects`
-2 | Xem danh sách bài thi | Hiển thị sau khi chọn môn học | `GET /api/subjects/:id/exams`
-3 | Ôn tập | Hiển thị sau khi ấn `Ôn tập` tại `#2` | định nghĩa sau
-4 | Thi thử | Hiển thị sau khi ấn `Thi thử` tại `#2` | định nghĩa sau
-5 | Xem bài thi | Hiển thị sau khi chọn bài thi tại `#2` | `GET /api/exams/:id`
-6 | Thi chính thức | Hiển thị sau khi ấn `Làm bài` tại `#5` | `GET /api/exams/:id/test`
-7 | Nộp bài | Bắt đầu khi submit bài thi tại `#6`| `POST /api/exams/:id`
-8 | Xem kết quả thi | Redirect tại `#7` | `/api/exams/:id/review`, `/api/exams/:id/ranking`
+1 | Đăng nhập | | `POST /api/login`
+2 | Đăng ký | | `POST /api/registration`
+3 | Xem danh sách môn học | Hiển thị sau khi đăng nhập | `GET /api/subjects`
+4 | Xem danh sách bài thi | Hiển thị sau khi chọn môn học | `GET /api/subjects/:id/exams`
+5 | Ôn tập | Hiển thị sau khi ấn `Ôn tập` tại `#4` | định nghĩa sau
+6 | Thi thử | Hiển thị sau khi ấn `Thi thử` tại `#4` | định nghĩa sau
+7 | Xem bài thi | Hiển thị sau khi chọn bài thi tại `#4` | `GET /api/exams/:id`
+8 | Thi chính thức | Hiển thị sau khi ấn `Làm bài` tại `#7` | `GET /api/exams/:id/test`
+9 | Nộp bài | Bắt đầu khi submit bài thi tại `#8`| `POST /api/exams/:id`
+10 | Xem kết quả thi | Redirect tại `#9 | `/api/exams/:id/review`, `/api/exams/:id/ranking`
 
 **Role Trainer**
 
