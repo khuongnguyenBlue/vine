@@ -44,4 +44,4 @@ Code | Chức năng | Mô tả | APIs
 
 ### Thiết kế DL
 
-![DB Diagram](https://i.ibb.co/k8TVKw7/vin-exam-db.png)
+![DB Diagram](https://s9.upanh.pro/2020/01/14/vin.exam-db.png)
